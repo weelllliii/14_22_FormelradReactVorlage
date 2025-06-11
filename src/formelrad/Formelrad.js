@@ -12,6 +12,13 @@ export default function Formelrad() {
         message: ""
     });
 
+    const [colors, setColors] = useState({
+        u: "black",
+        i: "black",
+        r: "black",
+        p: "black"
+    });
+
     const handleClear = (event) => {
         event.preventDefault();
         console.log("handleClear");
@@ -22,11 +29,28 @@ export default function Formelrad() {
             p: "",
             message: ""
         });
+        setColors({
+            u: "black",
+            i: "black",
+            r: "black",
+            p: "black"
+        });
     };
+
+    function resetColors() {
+        setColors({
+            u: "black",
+            i: "black",
+            r: "black",
+            p: "black"
+        });
+    }
 
     const handleSubmit = (event) => {
         event.preventDefault();
         console.log("handleSubmit");
+
+        resetColors();
 
         const { u, i, r, p } = values;
 
@@ -41,29 +65,44 @@ export default function Formelrad() {
             return;
         }
 
-        let result = { ...values, message: "" };
+        let newValues = { ...values, message: "" };
+        let newColors = { ...colors };
 
+        // Rechne je nach leeren Feldern und markiere berechnete Felder rot
         if (u === "" && i === "") {
-            result.u = Math.sqrt(p * r);
-            result.i = Math.sqrt(p / r);
+            newValues.u = (Math.sqrt(p * r)).toFixed(2);
+            newValues.i = (Math.sqrt(p / r)).toFixed(2);
+            newColors.u = "red";
+            newColors.i = "red";
         } else if (u === "" && r === "") {
-            result.u = p / i;
-            result.r = p / (i * i);
+            newValues.u = (p / i).toFixed(2);
+            newValues.r = (p / (i * i)).toFixed(2);
+            newColors.u = "red";
+            newColors.r = "red";
         } else if (u === "" && p === "") {
-            result.u = i * r;
-            result.p = i * i * r;
+            newValues.u = (i * r).toFixed(2);
+            newValues.p = (i * i * r).toFixed(2);
+            newColors.u = "red";
+            newColors.p = "red";
         } else if (i === "" && r === "") {
-            result.i = p / u;
-            result.r = (u * u) / p;
+            newValues.i = (p / u).toFixed(2);
+            newValues.r = ((u * u) / p).toFixed(2);
+            newColors.i = "red";
+            newColors.r = "red";
         } else if (i === "" && p === "") {
-            result.i = u / r;
-            result.p = (u * u) / r;
+            newValues.i = (u / r).toFixed(2);
+            newValues.p = ((u * u) / r).toFixed(2);
+            newColors.i = "red";
+            newColors.p = "red";
         } else if (r === "" && p === "") {
-            result.r = u / i;
-            result.p = u * i;
+            newValues.r = (u / i).toFixed(2);
+            newValues.p = (u * i).toFixed(2);
+            newColors.r = "red";
+            newColors.p = "red";
         }
 
-        setValues(result);
+        setValues(newValues);
+        setColors(newColors);
     };
 
     return (
@@ -75,25 +114,25 @@ export default function Formelrad() {
                 </header>
                 <form onSubmit={handleSubmit}>
                     <InputField
-                        color="black"
+                        color={colors.u}
                         value={values.u}
                         label="Spannung"
                         handleChange={e => setValues({ ...values, u: e.target.value })}
                     />
                     <InputField
-                        color="black"
+                        color={colors.i}
                         value={values.i}
                         label="Stromstärke"
                         handleChange={e => setValues({ ...values, i: e.target.value })}
                     />
                     <InputField
-                        color="black"
+                        color={colors.r}
                         value={values.r}
                         label="Widerstand"
                         handleChange={e => setValues({ ...values, r: e.target.value })}
                     />
                     <InputField
-                        color="black"
+                        color={colors.p}
                         value={values.p}
                         label="Leistung"
                         handleChange={e => setValues({ ...values, p: e.target.value })}
