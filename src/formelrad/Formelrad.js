@@ -12,59 +12,58 @@ export default function Formelrad() {
         message: ""
     });
 
+    const handleClear = (event) => {
+        event.preventDefault();
+        console.log("handleClear");
+        setValues({
+            u: "",
+            i: "",
+            r: "",
+            p: "",
+            message: ""
+        });
+    };
+
     const handleSubmit = (event) => {
         event.preventDefault();
         console.log("handleSubmit");
 
+        const { u, i, r, p } = values;
+
         let count = 0;
-        if (values.u === "") count++;
-        if (values.i === "") count++;
-        if (values.r === "") count++;
-        if (values.p === "") count++;
+        if (u === "") count++;
+        if (i === "") count++;
+        if (r === "") count++;
+        if (p === "") count++;
 
         if (count !== 2) {
             setValues(values => ({ ...values, message: "Bitte genau 2 Felder leer lassen!" }));
-        } else {
-            setValues(values => ({ ...values, message: "" }));
-
-            if (values.u === "" && values.i === "") {
-                setValues(values => ({
-                    ...values,
-                    u: Math.sqrt(values.p * values.r),
-                    i: Math.sqrt(values.p / values.r)
-                }));
-            } else if (values.u === "" && values.r === "") {
-                setValues(values => ({
-                    ...values,
-                    u: values.p / values.i,
-                    r: values.p / (values.i * values.i)
-                }));
-            } else if (values.u === "" && values.p === "") {
-                setValues(values => ({
-                    ...values,
-                    u: values.i * values.r,
-                    p: values.i * values.i * values.r
-                }));
-            } else if (values.i === "" && values.r === "") {
-                setValues(values => ({
-                    ...values,
-                    i: values.p / values.u,
-                    r: (values.u * values.u) / values.p
-                }));
-            } else if (values.i === "" && values.p === "") {
-                setValues(values => ({
-                    ...values,
-                    i: values.u / values.r,
-                    p: (values.u * values.u) / values.r
-                }));
-            } else if (values.r === "" && values.p === "") {
-                setValues(values => ({
-                    ...values,
-                    r: values.u / values.i,
-                    p: values.u * values.i
-                }));
-            }
+            return;
         }
+
+        let result = { ...values, message: "" };
+
+        if (u === "" && i === "") {
+            result.u = Math.sqrt(p * r);
+            result.i = Math.sqrt(p / r);
+        } else if (u === "" && r === "") {
+            result.u = p / i;
+            result.r = p / (i * i);
+        } else if (u === "" && p === "") {
+            result.u = i * r;
+            result.p = i * i * r;
+        } else if (i === "" && r === "") {
+            result.i = p / u;
+            result.r = (u * u) / p;
+        } else if (i === "" && p === "") {
+            result.i = u / r;
+            result.p = (u * u) / r;
+        } else if (r === "" && p === "") {
+            result.r = u / i;
+            result.p = u * i;
+        }
+
+        setValues(result);
     };
 
     return (
@@ -79,27 +78,28 @@ export default function Formelrad() {
                         color="black"
                         value={values.u}
                         label="Spannung"
-                        handleChange={e => setValues(values => ({ ...values, u: e.target.value }))}
+                        handleChange={e => setValues({ ...values, u: e.target.value })}
                     />
                     <InputField
                         color="black"
                         value={values.i}
                         label="Stromstärke"
-                        handleChange={e => setValues(values => ({ ...values, i: e.target.value }))}
+                        handleChange={e => setValues({ ...values, i: e.target.value })}
                     />
                     <InputField
                         color="black"
                         value={values.r}
                         label="Widerstand"
-                        handleChange={e => setValues(values => ({ ...values, r: e.target.value }))}
+                        handleChange={e => setValues({ ...values, r: e.target.value })}
                     />
                     <InputField
                         color="black"
                         value={values.p}
                         label="Leistung"
-                        handleChange={e => setValues(values => ({ ...values, p: e.target.value }))}
+                        handleChange={e => setValues({ ...values, p: e.target.value })}
                     />
                     <button type="submit">Calculate</button>
+                    <button style={{ marginLeft: 10 }} onClick={handleClear}>Clear</button>
                     <p style={{ color: "red" }}>{values.message}</p>
                 </form>
             </section>
